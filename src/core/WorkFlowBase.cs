@@ -3,12 +3,12 @@ using BLBConcordance.Core;
 namespace BLBConcordance.WorkFlow
 {
     /// <summary>
-    /// A workflow that look up for the first occurrence of a search term.
+    /// A base workflow implementation
     /// </summary>
-    public sealed class FirstOccurrenceWorkFlow : IWorkFlow
+    public sealed class WorkFlowBase : IWorkFlow
     {
-        private IEnumerable<IWebOperationPipeline> Pipelines { get; set; } = Enumerable.Empty<IWebOperationPipeline>();
-        public FirstOccurrenceWorkFlow()
+        private IEnumerable<IWebOperationPipeline> Pipelines { get; set; } = [];
+        public WorkFlowBase()
         {
         }
 
