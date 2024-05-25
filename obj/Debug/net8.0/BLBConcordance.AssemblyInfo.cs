@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BLBConcordance")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c05e270ff1423fbe5b07b95f65224cb51d5f0c1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34c3c8097dd54cff0620c4bb48f6e5acfd532718")]
 [assembly: System.Reflection.AssemblyProductAttribute("BLBConcordance")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BLBConcordance")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
