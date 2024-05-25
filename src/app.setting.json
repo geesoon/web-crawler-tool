@@ -1,0 +1,12 @@
+{
+    "BlueLetterBible": {
+        "WebDriver": {
+            "Url": "https://www.blueletterbible.org/"
+        }
+    },
+    "BibleGateway": {
+        "WebDriver": {
+            "Url": "https://www.biblegateway.com/"
+        }
+    }
+}
