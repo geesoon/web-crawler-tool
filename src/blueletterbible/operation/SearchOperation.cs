@@ -1,31 +1,54 @@
 using BLBConcordance.BlueLetterBible.Model;
-using BLBConcordance.Core;
+using BLBConcordance.Core.Interfaces;
+using BLBConcordance.Core.Model;
+using BLBConcordance.Core.Services;
 using EnsureThat;
 using OpenQA.Selenium;
 
 namespace BLBConcordance.BlueLetterBible
 {
-    public sealed class SearchOperation : WebOperationBase<string, string>
+    public sealed class SearchOperation : WebOperationBase<IEnumerable<BibleVerse>, string>
     {
-        private readonly By by;
-        private readonly string criteria;
-        private readonly BibleTranslation translation;
-        public SearchOperation(By by, string criteria, BibleTranslation translation)
+        private readonly string SearchUrl = "https://www.blueletterbible.org/search/search.cfm";
+        private readonly By By = By.CssSelector(".scriptureText");
+        private readonly string Criteria;
+        private readonly BibleTranslation Translation;
+        public SearchOperation(string criteria, BibleTranslation translation)
         {
-            this.by = EnsureArg.IsNotNull(by, nameof(by));
-            this.criteria = EnsureArg.IsNotNull(criteria, nameof(criteria));
-            this.translation = translation;
+            this.Criteria = EnsureArg.IsNotNull(criteria, nameof(criteria));
+            this.Translation = translation;
         }
 
-        public override string Operate(IWebCrawler webCrawler, string context)
+        public override IEnumerable<BibleVerse> Operate(IWebCrawler webCrawler, string context)
         {
-            webCrawler.BrowseUrl($"https://www.blueletterbible.org/search/search.cfm?Criteria={this.criteria}&t={this.translation}");
-            var result = webCrawler.FindElements(this.by).ToList();
-            if (result.Count > 0)
+            webCrawler.BrowseUrl($"{this.SearchUrl}?Criteria={this.Criteria}&t={this.Translation}");
+            var result = webCrawler
+                .FindElements(this.By)
+                .ToList();
+
+            IEnumerable<BibleVerse> bibleVerses = [];
+            foreach (var element in result)
             {
-                return result[0].Text;
+                var reference = element.FindElement(By.TagName("a")).Text;
+                var text = element.Text;
+
+                // Removing the verseReference from scriptureText
+                var stringToRemove = reference + " - ";
+                int index = text.IndexOf(stringToRemove);
+                if (index > -1)
+                {
+                    text = text.Remove(index, stringToRemove.Length);
+                }
+                try
+                {
+                    bibleVerses = bibleVerses.Append(new BibleVerse(reference, text));
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine($"{reference}");
+                }
             }
-            return string.Empty;
+            return bibleVerses;
         }
     }
 }

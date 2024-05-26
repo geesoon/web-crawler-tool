@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="32.0.3" />
     <PackageReference Include="Ensure.That" Version="10.1.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.21.0" />
   </ItemGroup>

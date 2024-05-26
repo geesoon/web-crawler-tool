@@ -1,4 +1,4 @@
-namespace BLBConcordance.Core
+namespace BLBConcordance.Core.Interfaces
 {
     /// <summary>
     /// This IWebOperationPipeline responsible for chaining operations into a pipeline

@@ -1,5 +1,7 @@
-namespace BLBConcordance.BlueLetterBible.Model {
-    public enum BibleTranslation {
+namespace BLBConcordance.BlueLetterBible.Model
+{
+    public enum BibleTranslation
+    {
         KJV
     }
 }

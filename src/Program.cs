@@ -1,7 +1,5 @@
 ﻿using BLBConcordance.BlueLetterBible;
-using BLBConcordance.Core;
-using BLBConcordance.WorkFlow;
-using OpenQA.Selenium;
+using BLBConcordance.Core.Services;
 using OpenQA.Selenium.Chrome;
 
 namespace BLBConcordance
@@ -10,8 +8,7 @@ namespace BLBConcordance
     {
         public static void Main(string[] args)
         {
-            // Define the workflow
-            var workflow = new FirstOccurrenceWorkFlow();
+            var workflow = new WorkFlowBase();
 
             var chromeOptions = new ChromeOptions();
             chromeOptions.AddArgument("--headless");
@@ -23,20 +20,12 @@ namespace BLBConcordance
             };
             var blueLetterBibleWebCrawler = new SeleniumWebCrawler(blueLetterBibleWebDriver);
             var blueLetterBibleWebOperationPipeline = new WebOperationPipeline(blueLetterBibleWebCrawler);
-            blueLetterBibleWebOperationPipeline.AddOperation(new SearchOperation(By.Id("scriptureOfTheDay")));
-            blueLetterBibleWebOperationPipeline.AddOperation(new TextGrabOperation(By.ClassName("tenVersesOn")));
-            workflow.AddPipeline(blueLetterBibleWebOperationPipeline);
-
-            using var bibleGatewayWebDriver = new ChromeDriver(chromeOptions)
-            {
-                Url = "https://www.biblegateway.com/"
-            };
-            var bibleGatewayWebCrawler = new SeleniumWebCrawler(bibleGatewayWebDriver);
-            var bibleGatewayWebOperationPipeline = new WebOperationPipeline(bibleGatewayWebCrawler);
-            bibleGatewayWebOperationPipeline.AddOperation(new SearchOperation(By.Id("verse-text")));
-            workflow.AddPipeline(bibleGatewayWebOperationPipeline);
-
-            workflow.Execute();
+            blueLetterBibleWebOperationPipeline.AddOperation(new SearchOperation("Love", BlueLetterBible.Model.BibleTranslation.KJV));
+            var jsonFileWriter = new JsonFileWriter();
+            workflow
+                .AddPipeline(blueLetterBibleWebOperationPipeline)
+                .Execute()
+                .OutputResults(jsonFileWriter);
         }
     }
 }

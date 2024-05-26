@@ -1,4 +1,5 @@
 using System.Text;
+using EnsureThat;
 
 namespace BLBConcordance.Core.Model
 {
@@ -21,10 +22,12 @@ namespace BLBConcordance.Core.Model
         public BibleBooks Book { get; set; }
         public int Chapter { get; set; }
         public int Verse { get; set; }
+        public string Text { get; set; }
 
-        public BibleVerse(string reference)
+        public BibleVerse(string reference, string text)
         {
-            EnsureThat.EnsureArg.IsNotNull(reference, nameof(reference));
+            EnsureArg.IsNotNull(reference, nameof(reference));
+            this.Text = EnsureArg.IsNotNullOrEmpty(text, nameof(text));
             try
             {
                 var spaceIndex = reference.LastIndexOf(' ');
@@ -41,7 +44,14 @@ namespace BLBConcordance.Core.Model
                     throw new ArgumentException("Not able to parse book reference part into proper BibleBooks.");
                 }
 
-                this.Book = book;
+                try
+                {
+                    this.Book = BibleBooksExtensions.GetEnumFromAbbreviation(book.ToString());
+                }
+                catch (ArgumentException)
+                {
+                    this.Book = book;
+                }
 
                 var chapterVerseParts = chapterVersePart.Split(':');
                 if (chapterVerseParts.Length != 2 ||
@@ -70,6 +80,15 @@ namespace BLBConcordance.Core.Model
             {
                 throw new ArgumentException($"The bible reference is not properly formatted. Reason: {ex.Message}");
             }
+        }
+
+        public override string ToString()
+        {
+            return new StringBuilder()
+                .Append(this.Reference)
+                .Append(" - ")
+                .Append(this.Text)
+                .ToString();
         }
     }
 }
