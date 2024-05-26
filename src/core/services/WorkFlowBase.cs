@@ -1,6 +1,6 @@
-using BLBConcordance.Core;
+using BLBConcordance.Core.Interfaces;
 
-namespace BLBConcordance.WorkFlow
+namespace BLBConcordance.Core.Services
 {
     /// <summary>
     /// A base workflow implementation
@@ -12,12 +12,13 @@ namespace BLBConcordance.WorkFlow
         {
         }
 
-        public void AddPipeline(IWebOperationPipeline pipeline)
+        public IWorkFlow AddPipeline(IWebOperationPipeline pipeline)
         {
             this.Pipelines = this.Pipelines.Append(pipeline);
+            return this;
         }
 
-        public void RemovePipeline(IWebOperationPipeline pipeline)
+        public IWorkFlow RemovePipeline(IWebOperationPipeline pipeline)
         {
             var pipelines = this.Pipelines.ToList();
 
@@ -25,19 +26,28 @@ namespace BLBConcordance.WorkFlow
             {
                 this.Pipelines = pipelines;
             }
+            return this;
         }
 
-        public void Execute()
+        public IWorkFlow Execute()
         {
             foreach (var pipeline in this.Pipelines)
             {
                 pipeline.Execute();
-                var results = pipeline.GetResults().ToList();
-                foreach (var result in results)
-                {
-                    Console.WriteLine(result);
-                }
             }
+            return this;
+        }
+
+        public IWorkFlow OutputResults(IFileWriter fileWriter)
+        {
+            var allResults = new List<object>();
+            foreach (var pipeline in this.Pipelines)
+            {
+                var results = pipeline.GetResults().ToList();
+                allResults = [.. allResults, .. results];
+            }
+            fileWriter.WriteToFile($"./output/{GetType().Name}_result.json", allResults);
+            return this;
         }
     }
 }

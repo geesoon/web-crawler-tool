@@ -1,8 +1,9 @@
 
 using OpenQA.Selenium;
 using EnsureThat;
+using BLBConcordance.Core.Interfaces;
 
-namespace BLBConcordance.Core
+namespace BLBConcordance.Core.Services
 {
     public sealed class SeleniumWebCrawler : IWebCrawler, IDisposable
     {

@@ -138,6 +138,32 @@ namespace BLBConcordance.Core.Model
         [Description("Jude")]
         Jude,
         [Description("Revelation")]
-        Revelation
+        Revelation,
+
+        // Abbreviated
+        [Description("Gen")]
+        Gen,
+        [Description("Exo")]
+        Exo,
+        [Description("Lev")]
+        Lev,
+    }
+
+    public static class BibleBooksExtensions
+    {
+        private static readonly Dictionary<string, BibleBooks> AbbreviationsToEnum = new Dictionary<string, BibleBooks>(StringComparer.OrdinalIgnoreCase)
+        {
+            {"Gen", BibleBooks.Genesis},
+            {"Exo", BibleBooks.Exodus},
+            {"Lev", BibleBooks.Leviticus},
+            // Add more mappings as needed
+        };
+
+        public static BibleBooks GetEnumFromAbbreviation(string abbreviation)
+        {
+            if (AbbreviationsToEnum.TryGetValue(abbreviation, out BibleBooks result))
+                return result;
+            throw new ArgumentException($"No enum value found for abbreviation '{abbreviation}'.", nameof(abbreviation));
+        }
     }
 }

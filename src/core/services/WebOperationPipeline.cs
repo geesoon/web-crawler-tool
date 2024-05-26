@@ -1,6 +1,7 @@
+using BLBConcordance.Core.Interfaces;
 using EnsureThat;
 
-namespace BLBConcordance.Core
+namespace BLBConcordance.Core.Services
 {
     public sealed class WebOperationPipeline : IWebOperationPipeline
     {
@@ -33,12 +34,22 @@ namespace BLBConcordance.Core
             object nextInput = null;
             foreach (var operation in this.Operations)
             {
-                nextInput = operation.Operate(this.WebCrawler, nextInput);
-                this.results = this.results.Append(nextInput);
+                try
+                {
+                    nextInput = operation.Operate(this.WebCrawler, nextInput);
+                    this.results = this.results.Append(nextInput);
+                }
+                catch (Exception ex)
+                {
+                    // Blanket catch to make sure the pipeline able to continue.
+                    Console.WriteLine(ex.ToString());
+                    nextInput = null;
+                }
             }
         }
 
-        public IEnumerable<object> GetResults(){
+        public IEnumerable<object> GetResults()
+        {
             return this.results;
         }
     }

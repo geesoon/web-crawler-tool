@@ -1,6 +1,6 @@
 using OpenQA.Selenium;
 
-namespace BLBConcordance.Core
+namespace BLBConcordance.Core.Interfaces
 {
     /// <summary>
     /// An abstraction of web crawler
